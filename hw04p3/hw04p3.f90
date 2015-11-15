@@ -1,25 +1,49 @@
 program main
-!====================================================================
-!  Computing Inverse matrix
-!  Method: Based on the Doolittle LU method
-!====================================================================
+
 implicit none
-integer, parameter :: n=3
-double precision M(n+1,n+1), M_inverse(n+1,n+1)
-double precision k(n+1), T(n+1), Q(n+1)
-double precision L, A, B, C, D, E, F,dx
+integer :: n
+double precision, allocatable :: M(:,:), k(:),T(:)
+!integer, parameter :: n=10
+!double precision M(n+1,n+1)
+!double precision k(n+1), T(n+1)
+double precision L, A, B, C, D, E, F,dx,Q,kk
+integer i,j
 L=1
 A=1
-B=1
-C=1
+B=0
+C=0
 D=1
-E=1
-F=1
+E=0
+F=100
 dx=L/n
-
-integer i,j
+Q=0
+kk=1
+n=10
+write (*,*) "k="
+read (*,*) kk
+write (*,*) "Q="
+read (*,*) Q
+write (*,*) "L="
+read (*,*) L
+write (*,*) "n="
+read (*,*) n
+write (*,*) "A="
+read (*,*) A
+write (*,*) "B="
+read (*,*) B
+write (*,*) "C="
+read (*,*) C
+write (*,*) "D="
+read (*,*) D
+write (*,*) "E="
+read (*,*) E
+write (*,*) "F="
+read (*,*) F
+allocate (M(n+1,n+1))
+allocate (k(n+1))
+allocate (T(n+1))
 do i=1,n+1
-   k(i)=dx*(i-1)
+   k(i)=kk
 end do
 do i=1,n+1
    do j=1,n+1
@@ -29,55 +53,85 @@ end do
 
 M(1,1)=(A-B/dx)
 M(1,2)=B/dx
-M(n+1,n)=(-F)/dx
-M(n+1,n+1)=D+F
+M(n+1,n)=(-E)/dx
+M(n+1,n+1)=D+E/dx
 do i=2,n
    M(i,i-1)=k(i)/(dx*dx)
-   M(i,i)=(-k(i)-k(i+1))/(dx*dx)
+   M(i,i)=(-1*k(i)-k(i+1))/(dx*dx)
    M(i,i+1)=k(i+1)/(dx*dx)
 end do
 
-Q(1)=C
-Q(n+1)=F
-do i=2,n
-   Q(i)=1
+
+do i=1,n+1
+   write (*,204) (M(i,j),j=1,n+1)
 end do
+204 format (10F10.4)
+!call inverse(M,M_inverse,n+1)
+
+!do i=1,n+1
+!   do j=1,n+1
+!      II(i,j)=0
+!      do kk=1,n+1
+!         II(i,j)=II(i,j)+M(i,kk)*M_inverse(kk,j)
+!      end do
+!   end do
+! end do
+!do i=1,n+1
+!   write (*,205) (II(i,j),j=1,n+1)
+!end do
+!205 format (12f12.6)
+!call inverse(M,M_inverse,n+1)
+call solve_heat_eqn(k,Q,L,n,A,B,C,D,E,F,T)
 
 
-! matrix A
-  data (a(1,i), i=1,3) /  3.0,  2.0,  4.0 /
-  data (a(2,i), i=1,3) /  2.0, -3.0,  1.0 /
-  data (a(3,i), i=1,3) /  1.0,  1.0,  2.0 /
 
 ! print a header and the original matrix
-  write (*,200)
-  do i=1,n
-     write (*,201) (a(i,j),j=1,n)
+  do i=1,n+1
+     write (*,201) (T(i))
   end do
-
-  call inverse(a,c,n)
-
-! print the inverse matrix C = A^{-1}
-  write (*,202)
-  do i = 1,n
-     write (*,201)  (c(i,j),j=1,n)
-  end do
-200 format (' Computing Inverse matrix ',/,/, &
-            ' Matrix A')
+!do i=1,n+1
+!   write (*,203) (M_inverse(i,j),j=1,n+1)
+!end do
 201 format (6f12.6)
-202 format (/,' Inverse matrix A^{-1}')
+!203 format (12f12.6)
 end
 
   subroutine solve_heat_eqn(k,Q,L,n,A,B,C,D,E,F,T)
 implicit none
-integer n
+integer n,i,j
 double precision M(n+1,n+1), M_inverse(n+1,n+1)
-double precision k(n+1), T(n+1), Q(n+1)
-double precision L, A, B, C, D, E, F
+double precision k(n+1), T(n+1), bb(n+1)
+double precision L, A, B, C, D, E, F,Q
 double precision dx
 dx=L/n
+do i=1,n+1
+   do j=1,n+1
+      M(i,j)=0
+   end do
+end do
+M(1,1)=(A-B/dx)
+M(1,2)=B/dx
+M(n+1,n)=(-E)/dx
+M(n+1,n+1)=D+E/dx
+do i=2,n
+   M(i,i-1)=k(i)/(dx*dx)
+   M(i,i)=(-1*k(i)-k(i+1))/(dx*dx)
+   M(i,i+1)=k(i+1)/(dx*dx)
+end do
 
+bb(1)=C
+bb(n+1)=F
+do i=2,n
+   bb(i)=Q
+end do
 
+call inverse(M,M_inverse,n+1)
+do i=1,n+1
+   T(i)=0
+   do j=1,n+1
+      T(i)=T(i)+M_inverse(i,j)*bb(j)
+   end do
+end do
 end subroutine solve_heat_eqn
 
   subroutine inverse(a,c,n)
