@@ -1,0 +1,12 @@
+18:23:46 **** Incremental Build of configuration Debug for project hw04p3 ****
+make all 
+Building file: ../hw04p3.f90
+Invoking: GNU Fortran Compiler
+gfortran -funderscoring -O0 -g -Wall -c -fmessage-length=0 -o "hw04p3.o" "../hw04p3.f90"
+Finished building: ../hw04p3.f90
+ 
+Building target: hw04p3
+Invoking: GNU Fortran Linker
+gfortran  -o "hw04p3"  ./hw04p3.o   
+Finished building target: hw04p3
+ 

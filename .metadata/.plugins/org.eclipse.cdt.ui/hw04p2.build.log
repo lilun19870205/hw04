@@ -1,0 +1,15 @@
+11:01:35 **** Build of configuration Debug for project hw04p2 ****
+make all 
+Building file: ../src/hw04p2.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/hw04p2.d" -MT"src/hw04p2.d" -o "src/hw04p2.o" "../src/hw04p2.cpp"
+Finished building: ../src/hw04p2.cpp
+ 
+Building target: hw04p2
+Invoking: GCC C++ Linker
+g++  -o "hw04p2"  ./src/hw04p2.o   
+Finished building target: hw04p2
+ 
+
+11:01:48 Build Finished (took 12s.825ms)
+
